@@ -15,7 +15,7 @@ Natural language interface for PostgreSQL with automated audit logging and rollb
 
 ### Database Setup
 ```bash
-psql -U postgres -f database/schema.sql
+psql -h localhost -U user -d mydb -f database/schema.sql
 ```
 
 ### Backend Setup
