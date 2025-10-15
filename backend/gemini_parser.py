@@ -27,7 +27,7 @@ class GeminiParser:
             raise ValueError("GEMINI_API_KEY not found in environment variables")
         
         self.client = genai.Client(api_key=self.api_key)
-        self.model = 'gemini-2.0-flash'
+        self.model = 'gemini-2.0-flash-lite'
         
         self.system_instruction = """You are a SQL query generator for PostgreSQL university database.
 

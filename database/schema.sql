@@ -156,8 +156,7 @@ BEGIN
         RAISE EXCEPTION 'Only admin can view audit logs';
     END IF;
     
-    -- Set session variable to bypass RLS
-    PERFORM set_config('app.role', 'admin', true);
+    PERFORM set_config('app.role', 'admin', false);
     
     RETURN QUERY
     SELECT a.log_id, a.operation, a.table_name, a.executed_by, a.executed_at, a.status
@@ -165,7 +164,7 @@ BEGIN
     ORDER BY a.executed_at DESC
     LIMIT 100;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET app.role = 'admin';
 
 CREATE OR REPLACE FUNCTION get_all_users(p_role VARCHAR)
 RETURNS TABLE(

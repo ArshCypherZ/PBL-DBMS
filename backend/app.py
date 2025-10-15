@@ -173,6 +173,8 @@ def execute_query(request: QueryRequest, user: UserInfo = Depends(verify_token))
                     )
             
             result = db.execute_query(parsed['query'])
+            db.execute_query("SELECT log_operation(%s, %s, %s, %s)", 
+                           ['SELECT', 'query', user.username, 'SUCCESS'], fetch=False)
             return QueryResponse(
                 success=True,
                 message="Query executed successfully",
@@ -211,11 +213,12 @@ def execute_query(request: QueryRequest, user: UserInfo = Depends(verify_token))
                     needs_confirmation=False
                 )
             else:
-                # Direct SQL query (for updates without procedures)
                 if not parsed.get('query'):
                     raise HTTPException(status_code=400, detail="No query or procedure specified")
                 
                 db.execute_query(parsed['query'], parsed.get('params', []), fetch=False)
+                db.execute_query("SELECT log_operation(%s, %s, %s, %s)", 
+                               [parsed['operation'].upper(), 'query', user.username, 'SUCCESS'], fetch=False)
                 
                 return QueryResponse(
                     success=True,
